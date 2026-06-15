@@ -30,6 +30,7 @@ function Users() {
   };
 
   const onDOBChange = (event) => {
+    console.log("DOB", event.target.value);
     setDob(event.target.value);
   };
   const onGenderChange = (event) => {
@@ -38,11 +39,11 @@ function Users() {
   const onStateChange = (event) => {
     setState(event.target.value);
 
-    console.log("state Value", event.target.value);
+    // console.log("state Value", event.target.value);
   };
   const addNewUser = (e) => {
     e.preventDefault();
-    console.log("add new user");
+    // console.log("add new user");
     // const citySelectEDBYiD = city
     const newUserDetailFiled = {
       Id: Math.random() + 1,
@@ -54,11 +55,13 @@ function Users() {
       State: state,
       City: city,
     };
+    console.log("newUserDetailFiled", newUserDetailFiled);
     setUserData([...userData, newUserDetailFiled]);
 
     resetForm();
+    setShowForm(false);
   };
-  console.log(userData);
+  // console.log(userData);
   const resetForm = () => {
     setFirstName("");
     setLastName("");
@@ -70,6 +73,46 @@ function Users() {
     setReset(true);
   };
 
+  const stateOptions = [
+    { id: 1, name: "maharashtra", label: "Maharashtra" },
+    { id: 2, name: "gujarat", label: "Gujarat" },
+    { id: 3, name: "rajasthan", label: "Rajasthan" },
+    { id: 4, name: "karnataka", label: "Karnataka" },
+    { id: 5, name: "tamilnadu", label: "Tamil Nadu" },
+    { id: 6, name: "delhi", label: "Delhi" },
+    { id: 7, name: "punjab", label: "Punjab" },
+    { id: 8, name: "haryana", label: "Haryana" },
+    { id: 9, name: "uttarpradesh", label: "Uttar Pradesh" },
+    { id: 10, name: "bihar", label: "Bihar" },
+    { id: 11, name: "westbengal", label: "West Bengal" },
+    { id: 12, name: "odisha", label: "Odisha" },
+    { id: 13, name: "assam", label: "Assam" },
+    { id: 14, name: "jharkhand", label: "Jharkhand" },
+    { id: 15, name: "chhattisgarh", label: "Chhattisgarh" },
+    { id: 16, name: "himachalpradesh", label: "Himachal Pradesh" },
+    { id: 17, name: "uttarakhand", label: "Uttarakhand" },
+    { id: 18, name: "goa", label: "Goa" },
+    { id: 19, name: "manipur", label: "Manipur" },
+    { id: 20, name: "meghalaya", label: "Meghalaya" },
+    { id: 21, name: "mizoram", label: "Mizoram" },
+    { id: 22, name: "nagaland", label: "Nagaland" },
+    { id: 23, name: "sikkim", label: "Sikkim" },
+    { id: 24, name: "tripura", label: "Tripura" },
+    { id: 25, name: "arunachalpradesh", label: "Arunachal Pradesh" },
+    { id: 26, name: "andhrapradesh", label: "Andhra Pradesh" },
+    { id: 27, name: "telangana", label: "Telangana" },
+    { id: 28, name: "ladakh", label: "Ladakh" },
+    { id: 29, name: "jammuandkashmir", label: "Jammu and Kashmir" },
+    { id: 30, name: "puducherry", label: "Puducherry" },
+    { id: 31, name: "chandigarh", label: "Chandigarh" },
+    { id: 32, name: "andamanandnicobar", label: "Andaman and Nicobar Islands" },
+    {
+      id: 33,
+      name: "dadraandnagarhavelianddamnagarhavelianddamananddiu",
+      label: "Dadra and Nagar Haveli and Daman and Diu",
+    },
+    { id: 34, name: "lakshadweep", label: "Lakshadweep" },
+  ];
   return (
     <>
       {/* Top Section */}
@@ -169,9 +212,12 @@ function Users() {
                 onChange={onStateChange}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Select State</option>
+                {/* <option value="">Select State</option>
                 <option value="1">Maharashtra</option>
-                <option value="2">Gujarat</option>
+                <option value="2">Gujarat</option> */}
+                {stateOptions.map((state) => {
+                  return <option value={state.value}>{state.label}</option>;
+                })}
               </select>
 
               <select
@@ -229,7 +275,7 @@ function Users() {
                 <td className="border p-2">{user.Id}</td>
                 <td className="border p-2">{user.FirstName}</td>
                 <td className="border p-2">{user.LastName}</td>
-                <td className="border p-2">{user.DateOfBirth}</td>
+                <td className="border p-2">{user.DOB}</td>
                 <td className="border p-2">{user.Age}</td>
                 <td className="border p-2">{user.Gender}</td>
                 <td className="border p-2">{user.State}</td>
