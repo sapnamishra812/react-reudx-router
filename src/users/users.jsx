@@ -38,15 +38,11 @@ function Users() {
   };
   const onStateChange = (event) => {
     setState(event.target.value);
-
-    // console.log("state Value", event.target.value);
   };
   const addNewUser = (e) => {
     e.preventDefault();
-    // console.log("add new user");
-    // const citySelectEDBYiD = city
     const newUserDetailFiled = {
-      Id: Math.random() + 1,
+      Id: Math.random(),
       FirstName: firstName,
       LastName: lastName,
       DOB: dob,
@@ -76,43 +72,21 @@ function Users() {
   const stateOptions = [
     { id: 1, name: "maharashtra", label: "Maharashtra" },
     { id: 2, name: "gujarat", label: "Gujarat" },
-    { id: 3, name: "rajasthan", label: "Rajasthan" },
-    { id: 4, name: "karnataka", label: "Karnataka" },
-    { id: 5, name: "tamilnadu", label: "Tamil Nadu" },
-    { id: 6, name: "delhi", label: "Delhi" },
-    { id: 7, name: "punjab", label: "Punjab" },
-    { id: 8, name: "haryana", label: "Haryana" },
-    { id: 9, name: "uttarpradesh", label: "Uttar Pradesh" },
-    { id: 10, name: "bihar", label: "Bihar" },
-    { id: 11, name: "westbengal", label: "West Bengal" },
-    { id: 12, name: "odisha", label: "Odisha" },
-    { id: 13, name: "assam", label: "Assam" },
-    { id: 14, name: "jharkhand", label: "Jharkhand" },
-    { id: 15, name: "chhattisgarh", label: "Chhattisgarh" },
-    { id: 16, name: "himachalpradesh", label: "Himachal Pradesh" },
-    { id: 17, name: "uttarakhand", label: "Uttarakhand" },
-    { id: 18, name: "goa", label: "Goa" },
-    { id: 19, name: "manipur", label: "Manipur" },
-    { id: 20, name: "meghalaya", label: "Meghalaya" },
-    { id: 21, name: "mizoram", label: "Mizoram" },
-    { id: 22, name: "nagaland", label: "Nagaland" },
-    { id: 23, name: "sikkim", label: "Sikkim" },
-    { id: 24, name: "tripura", label: "Tripura" },
-    { id: 25, name: "arunachalpradesh", label: "Arunachal Pradesh" },
-    { id: 26, name: "andhrapradesh", label: "Andhra Pradesh" },
-    { id: 27, name: "telangana", label: "Telangana" },
-    { id: 28, name: "ladakh", label: "Ladakh" },
-    { id: 29, name: "jammuandkashmir", label: "Jammu and Kashmir" },
-    { id: 30, name: "puducherry", label: "Puducherry" },
-    { id: 31, name: "chandigarh", label: "Chandigarh" },
-    { id: 32, name: "andamanandnicobar", label: "Andaman and Nicobar Islands" },
-    {
-      id: 33,
-      name: "dadraandnagarhavelianddamnagarhavelianddamananddiu",
-      label: "Dadra and Nagar Haveli and Daman and Diu",
-    },
-    { id: 34, name: "lakshadweep", label: "Lakshadweep" },
   ];
+  const stateWiseCity = {
+    maharashtra: [
+      { id: 1, name: "mumbai", Label: "Mumbai" },
+      { id: 2, name: "pune", Label: "Pune" },
+      { id: 3, name: "thane", Label: "Thane" },
+      { id: 4, name: "nashik", Label: "Nashik" },
+    ],
+    gujarat: [
+      { id: 1, name: "ahmedabad", Label: "Ahmedabad" },
+      { id: 2, name: "surat", Label: "Surat" },
+      { id: 3, name: "vadodara", Label: "Vadodara" },
+    ],
+  };
+  const notFutureDateSelect = new Date().toISOString().split("T")[0];
   return (
     <>
       {/* Top Section */}
@@ -158,6 +132,7 @@ function Users() {
                 type="date"
                 value={dob}
                 onChange={onDOBChange}
+                max={notFutureDateSelect}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
@@ -216,7 +191,7 @@ function Users() {
                 <option value="1">Maharashtra</option>
                 <option value="2">Gujarat</option> */}
                 {stateOptions.map((state) => {
-                  return <option value={state.value}>{state.label}</option>;
+                  return <option value={state.name}>{state.label}</option>;
                 })}
               </select>
 
@@ -225,10 +200,11 @@ function Users() {
                 onChange={(e) => setCity(e.target.value)}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                <option value="">Select City</option>
-                <option value="1">Mumbai</option>
-                <option value="2">Pune</option>
-                <option value="3">Ahmedabad</option>
+                {stateWiseCity[state]?.map((cities) => (
+                  <option key={cities.id} value={cities.name}>
+                    {cities.Label}
+                  </option>
+                ))}
               </select>
 
               <div className="flex gap-3 mt-4">
