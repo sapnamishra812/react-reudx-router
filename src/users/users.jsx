@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-
+import CustomName from "./customName";
 function Users() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -11,6 +11,7 @@ function Users() {
   const [userData, setUserData] = useState([]);
   const [showForm, setShowForm] = useState(false);
   const [reset, setReset] = useState(false);
+  const [error, setError] = useState({});
 
   // click add button
   const clickToOpenForm = () => {
@@ -41,6 +42,50 @@ function Users() {
   };
   const addNewUser = (e) => {
     e.preventDefault();
+
+    //validation for firtsname
+    let newErrorMeg = {};
+    if (!firstName.trim()) {
+      newErrorMeg.firstName = "FirstName should not be empty";
+    } else if (firstName.length < 2) {
+      newErrorMeg.firstName = "Firstname should not be lessthen 2 charater";
+    } else if (firstName.length > 50) {
+      newErrorMeg.firstName =
+        "Firstname should not be greaterthane  50 charater";
+    }
+    if (!lastName.trim()) {
+      newErrorMeg.lastName = "LastName should not be empty";
+    } else if (lastName.length < 2) {
+      newErrorMeg.lastName = "LastName should not be lessthen 2 charater";
+    } else if (lastName.length > 50) {
+      newErrorMeg.lastName = "LastName should not be greaterthane  50 charater";
+    }
+
+    //dob validation
+    const todayDate = new Date();
+    const selectedDate = new Date(dob);
+
+    if (!dob.trim()) {
+      newErrorMeg.dob = "Dob is required";
+    } else if (selectedDate > todayDate) {
+      newErrorMeg.dob = "Dob should not be a future date ";
+    }
+    if (!gender) {
+      newErrorMeg.gender = "Gender is required";
+    }
+    if (!state) {
+      newErrorMeg.state = "State is required";
+    }
+    if (!city) {
+      newErrorMeg.city = "City is required";
+    }
+
+    console.log(newErrorMeg);
+    setError(newErrorMeg);
+    if (Object.keys(newErrorMeg).length > 0) {
+      return;
+    }
+
     const newUserDetailFiled = {
       Id: Math.random(),
       FirstName: firstName,
@@ -51,7 +96,7 @@ function Users() {
       State: state,
       City: city,
     };
-    console.log("newUserDetailFiled", newUserDetailFiled);
+    //console.log("newUserDetailFiled", newUserDetailFiled);
     setUserData([...userData, newUserDetailFiled]);
 
     resetForm();
@@ -86,7 +131,7 @@ function Users() {
       { id: 3, name: "vadodara", Label: "Vadodara" },
     ],
   };
-  const notFutureDateSelect = new Date().toISOString().split("T")[0];
+  // const notFutureDateSelect = new Date().toISOString().split("T")[0];
   return (
     <>
       {/* Top Section */}
@@ -112,31 +157,70 @@ function Users() {
             <h2 className="text-2xl font-bold mb-6 text-center">Add User</h2>
 
             <div className="grid grid-cols-1 gap-4">
-              <input
+              <CustomName
+                label={"First Name"}
                 type="text"
                 placeholder="First Name"
                 value={firstName}
                 onChange={onFirstNameChange}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {error.firstName && (
+                <p className="text-red-500 text-sm">{error.firstName}</p>
+              )}
+              {/* <input
+                type="text"
+                placeholder="First Name"
+                value={firstName}
+                onChange={onFirstNameChange}
+                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              /> */}
 
-              <input
+              {/* <input
+                type="text"
+                placeholder="Last Name"
+                value={lastName}
+                onChange={onLastNameChange}
+                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              /> */}
+              <CustomName
+                label={"Last Name"}
                 type="text"
                 placeholder="Last Name"
                 value={lastName}
                 onChange={onLastNameChange}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {error.lastName && (
+                <p className="text-red-500 text-sm">{error.lastName}</p>
+              )}
 
-              <input
+              {/* <input
                 type="date"
                 value={dob}
                 onChange={onDOBChange}
-                max={notFutureDateSelect}
+                // max={notFutureDateSelect}
+                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              /> */}
+              <CustomName
+                label={"Date Of Birth"}
+                type="date"
+                value={dob}
+                onChange={onDOBChange}
+                // max={notFutureDateSelect}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
+              {error.dob && <p className="text-red-500 text-sm">{error.dob}</p>}
 
-              <input
+              {/* <input
+                type="number"
+                placeholder="Age"
+                value={age}
+                onChange={onAgeChange}
+                className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              /> */}
+              <CustomName
+                label={"Age"}
                 type="number"
                 placeholder="Age"
                 value={age}
@@ -181,7 +265,11 @@ function Users() {
                   </label>
                 </div>
               </div>
+              {error.gender && (
+                <p className="text-red-500 text-sm">{error.gender}</p>
+              )}
 
+              <label className="font-medium block mb-2">State</label>
               <select
                 value={state}
                 onChange={onStateChange}
@@ -192,9 +280,12 @@ function Users() {
                 <option value="2">Gujarat</option> */}
                 {stateOptions.map((state) => {
                   return <option value={state.name}>{state.label}</option>;
-                })}
+                })}{" "}
               </select>
-
+              {error.state && (
+                <p className="text-red-500 text-sm">{error.state}</p>
+              )}
+              <label className="font-medium block mb-2">City</label>
               <select
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
@@ -206,7 +297,9 @@ function Users() {
                   </option>
                 ))}
               </select>
-
+              {error.city && (
+                <p className="text-red-500 text-sm">{error.city}</p>
+              )}
               <div className="flex gap-3 mt-4">
                 <button
                   type="submit"
