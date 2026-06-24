@@ -31,15 +31,32 @@ function Users() {
   };
 
   const onDOBChange = (event) => {
-    console.log("DOB", event.target.value);
+    //console.log("DOB", event.target.value);
     setDob(event.target.value);
+
+    const dobAge = event.target.value;
+    const birthDate = new Date(dobAge);
+    const todatDate = new Date();
+    let newAge = todatDate.getFullYear() - birthDate.getFullYear();
+    const monthDiff = todatDate.getMonth() - birthDate.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && todatDate.getDate() < birthDate.getDate())
+    ) {
+      newAge--;
+    }
+    setAge(newAge);
   };
   const onGenderChange = (event) => {
     setGender(event.target.value);
   };
   const onStateChange = (event) => {
     setState(event.target.value);
+    // if (event.target.value === "maharashtra") {
+    //   setCity("Mumbai");
+    // }
   };
+
   const addNewUser = (e) => {
     e.preventDefault();
 
@@ -87,7 +104,8 @@ function Users() {
     }
 
     const newUserDetailFiled = {
-      Id: Math.random(),
+      // Id: Math.floor(Math.random() * 100) + 1,
+      Id: userData.length + 1,
       FirstName: firstName,
       LastName: lastName,
       DOB: dob,
@@ -132,6 +150,9 @@ function Users() {
     ],
   };
   // const notFutureDateSelect = new Date().toISOString().split("T")[0];
+
+  // edit function
+
   return (
     <>
       {/* Top Section */}
@@ -222,9 +243,10 @@ function Users() {
               <CustomName
                 label={"Age"}
                 type="number"
-                placeholder="Age"
+                // placeholder="Age"
                 value={age}
-                onChange={onAgeChange}
+                // onChange={onAgeChange}
+                readOnly
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
 
@@ -278,6 +300,7 @@ function Users() {
                 {/* <option value="">Select State</option>
                 <option value="1">Maharashtra</option>
                 <option value="2">Gujarat</option> */}
+                <option value="">Select State</option>
                 {stateOptions.map((state) => {
                   return <option value={state.name}>{state.label}</option>;
                 })}{" "}
@@ -291,8 +314,9 @@ function Users() {
                 onChange={(e) => setCity(e.target.value)}
                 className="border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
+                <option value="">Select City</option>
                 {stateWiseCity[state]?.map((cities) => (
-                  <option key={cities.id} value={cities.name}>
+                  <option selected={false} key={cities.id} value={cities.name}>
                     {cities.Label}
                   </option>
                 ))}
@@ -351,10 +375,16 @@ function Users() {
                 <td className="border p-2">{user.City}</td>
 
                 <td className="border p-2">
-                  <button className="bg-yellow-500 text-white px-3 py-1 rounded mr-2">
+                  <button
+                    className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 "
+                    onClick={editHandler}
+                  >
                     Edit
                   </button>
-                  <button className="bg-red-500 text-white px-3 py-1 rounded">
+                  <button
+                    className="bg-red-500 text-white px-3 py-1 rounded"
+                    onClick={deleteHandler}
+                  >
                     Delete
                   </button>
                 </td>
