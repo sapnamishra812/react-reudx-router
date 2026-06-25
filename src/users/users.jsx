@@ -13,6 +13,26 @@ function Users() {
   const [reset, setReset] = useState(false);
   const [error, setError] = useState({});
 
+  const [idToedit, setIdToEdit] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const stateOptions = [
+    { id: 1, name: "maharashtra", label: "Maharashtra" },
+    { id: 2, name: "gujarat", label: "Gujarat" },
+  ];
+  const stateWiseCity = {
+    maharashtra: [
+      { id: 1, name: "mumbai", Label: "Mumbai" },
+      { id: 2, name: "pune", Label: "Pune" },
+      { id: 3, name: "thane", Label: "Thane" },
+      { id: 4, name: "nashik", Label: "Nashik" },
+    ],
+    gujarat: [
+      { id: 1, name: "ahmedabad", Label: "Ahmedabad" },
+      { id: 2, name: "surat", Label: "Surat" },
+      { id: 3, name: "vadodara", Label: "Vadodara" },
+    ],
+  };
   // click add button
   const clickToOpenForm = () => {
     console.log("open form");
@@ -26,9 +46,9 @@ function Users() {
   const onLastNameChange = (event) => {
     setLastName(event.target.value);
   };
-  const onAgeChange = (event) => {
-    setAge(event.target.value);
-  };
+  // const onAgeChange = (event) => {
+  //   setAge(event.target.value);
+  // };
 
   const onDOBChange = (event) => {
     //console.log("DOB", event.target.value);
@@ -97,61 +117,88 @@ function Users() {
       newErrorMeg.city = "City is required";
     }
 
-    console.log(newErrorMeg);
+    // console.log(newErrorMeg);
     setError(newErrorMeg);
     if (Object.keys(newErrorMeg).length > 0) {
       return;
     }
-
-    const newUserDetailFiled = {
-      // Id: Math.floor(Math.random() * 100) + 1,
-      Id: userData.length + 1,
-      FirstName: firstName,
-      LastName: lastName,
-      DOB: dob,
-      Age: age,
-      Gender: gender,
-      State: state,
-      City: city,
-    };
-    //console.log("newUserDetailFiled", newUserDetailFiled);
-    setUserData([...userData, newUserDetailFiled]);
-
-    resetForm();
-    setShowForm(false);
+    if (isEdit) {
+      const editdVal = userData.map((e) => {
+        if (e.Id === idToedit) {
+          return {
+            ...e,
+            FirstName: firstName,
+            LastName: lastName,
+            DOB: dob,
+            Age: age,
+            Gender: gender,
+            State: state,
+            City: city,
+            // Id: e.Id,
+          };
+        } else {
+          return e;
+        }
+      });
+      setUserData(editdVal);
+      setIsEdit(false);
+      setIdToEdit(null);
+      setShowForm(false);
+      resetForm();
+    } else {
+      const newUserDetailFiled = {
+        // Id: Math.floor(Math.random () * 100) + 1,
+        Id: userData.length + 1,
+        FirstName: firstName,
+        LastName: lastName,
+        DOB: dob,
+        Age: age,
+        Gender: gender,
+        State: state,
+        City: city,
+      };
+      //console.log("newUserDetailFiled", newUserDetailFiled);
+      setUserData([...userData, newUserDetailFiled]);
+      setShowForm(false);
+      resetForm();
+    }
   };
   // console.log(userData);
   const resetForm = () => {
     setFirstName("");
     setLastName("");
-    setDob("");
-    setAge("");
+    setDob(0);
+    setAge(0);
     setGender("");
     setState("");
     setCity("");
-    setReset(true);
+    // setReset(true);
   };
 
-  const stateOptions = [
-    { id: 1, name: "maharashtra", label: "Maharashtra" },
-    { id: 2, name: "gujarat", label: "Gujarat" },
-  ];
-  const stateWiseCity = {
-    maharashtra: [
-      { id: 1, name: "mumbai", Label: "Mumbai" },
-      { id: 2, name: "pune", Label: "Pune" },
-      { id: 3, name: "thane", Label: "Thane" },
-      { id: 4, name: "nashik", Label: "Nashik" },
-    ],
-    gujarat: [
-      { id: 1, name: "ahmedabad", Label: "Ahmedabad" },
-      { id: 2, name: "surat", Label: "Surat" },
-      { id: 3, name: "vadodara", Label: "Vadodara" },
-    ],
-  };
   // const notFutureDateSelect = new Date().toISOString().split("T")[0];
 
   // edit function
+  const editHandler = (id) => {
+    //console.log(id);
+    setIsEdit(true);
+    setIdToEdit(id);
+
+    const [selectedUser] = userData.filter((e) => e.Id === id);
+    setShowForm(true);
+    // console.log("hii", selectedUser);
+    setFirstName(selectedUser.FirstName);
+    setLastName(selectedUser.LastName);
+    setDob(selectedUser.DOB);
+    setGender(selectedUser.Gender);
+    setAge(selectedUser.Age);
+    setState(selectedUser.State);
+    setCity(selectedUser.City);
+  };
+  const deleteHandler = (id) => {
+    console.log(id);
+    const deleteVal = userData.filter((deltedUsser) => deltedUsser.Id !== id);
+    setUserData(deleteVal);
+  };
 
   return (
     <>
@@ -377,19 +424,18 @@ function Users() {
                 <td className="border p-2">
                   <button
                     className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 "
-                    onClick={editHandler}
+                    onClick={() => editHandler(user.Id)}
                   >
                     Edit
                   </button>
                   <button
                     className="bg-red-500 text-white px-3 py-1 rounded"
-                    onClick={deleteHandler}
+                    onClick={() => deleteHandler(user.Id)}
                   >
                     Delete
                   </button>
                 </td>
               </tr>
-              ;
             </tbody>
           );
         })}
