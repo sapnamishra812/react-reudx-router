@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import CustomName from "./customName";
-function Users() {
+import { useEffect } from "react";
+function Users({ userData, setUserData, selectedUser, setSelectedUser }) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [dob, setDob] = useState("");
@@ -8,14 +9,38 @@ function Users() {
   const [gender, setGender] = useState("");
   const [state, setState] = useState("");
   const [city, setCity] = useState("");
-  const [userData, setUserData] = useState([]);
+  // const [userData, setUserData] = useState([]);
   const [showForm, setShowForm] = useState(false);
-  const [reset, setReset] = useState(false);
+  // const [reset, setReset] = useState(false);
   const [error, setError] = useState({});
 
-  // click add button
+  const [idToedit, setIdToEdit] = useState(null);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const stateOptions = [
+    { id: 1, name: "maharashtra", label: "Maharashtra" },
+    { id: 2, name: "gujarat", label: "Gujarat" },
+  ];
+  const stateWiseCity = {
+    maharashtra: [
+      { id: 1, name: "mumbai", Label: "Mumbai" },
+      { id: 2, name: "pune", Label: "Pune" },
+      { id: 3, name: "thane", Label: "Thane" },
+      { id: 4, name: "nashik", Label: "Nashik" },
+    ],
+    gujarat: [
+      { id: 1, name: "ahmedabad", Label: "Ahmedabad" },
+      { id: 2, name: "surat", Label: "Surat" },
+      { id: 3, name: "vadodara", Label: "Vadodara" },
+    ],
+  };
+  useEffect(() => {
+    if (selectedUser !== null) {
+      editHandler(selectedUser);
+    }
+  }, [selectedUser]); // click add button
   const clickToOpenForm = () => {
-    console.log("open form");
+    setSelectedUser(null);
     setShowForm(true);
   };
 
@@ -26,9 +51,9 @@ function Users() {
   const onLastNameChange = (event) => {
     setLastName(event.target.value);
   };
-  const onAgeChange = (event) => {
-    setAge(event.target.value);
-  };
+  // const onAgeChange = (event) => {
+  //   setAge(event.target.value);
+  // };
 
   const onDOBChange = (event) => {
     //console.log("DOB", event.target.value);
@@ -97,28 +122,51 @@ function Users() {
       newErrorMeg.city = "City is required";
     }
 
-    console.log(newErrorMeg);
+    // console.log(newErrorMeg);
     setError(newErrorMeg);
     if (Object.keys(newErrorMeg).length > 0) {
       return;
     }
-
-    const newUserDetailFiled = {
-      // Id: Math.floor(Math.random() * 100) + 1,
-      Id: userData.length + 1,
-      FirstName: firstName,
-      LastName: lastName,
-      DOB: dob,
-      Age: age,
-      Gender: gender,
-      State: state,
-      City: city,
-    };
-    //console.log("newUserDetailFiled", newUserDetailFiled);
-    setUserData([...userData, newUserDetailFiled]);
-
-    resetForm();
-    setShowForm(false);
+    if (isEdit) {
+      const editdVal = userData.map((e) => {
+        if (e.Id === idToedit) {
+          return {
+            ...e,
+            FirstName: firstName,
+            LastName: lastName,
+            DOB: dob,
+            Age: age,
+            Gender: gender,
+            State: state,
+            City: city,
+            // Id: e.Id,
+          };
+        } else {
+          return e;
+        }
+      });
+      setUserData(editdVal);
+      setIsEdit(false);
+      setIdToEdit(null);
+      setShowForm(false);
+      resetForm();
+    } else {
+      const newUserDetailFiled = {
+        // Id: Math.floor(Math.random () * 100) + 1,
+        Id: userData.length + 1,
+        FirstName: firstName,
+        LastName: lastName,
+        DOB: dob,
+        Age: age,
+        Gender: gender,
+        State: state,
+        City: city,
+      };
+      //console.log("newUserDetailFiled", newUserDetailFiled);
+      setUserData([...userData, newUserDetailFiled]);
+      setShowForm(false);
+      resetForm();
+    }
   };
   // console.log(userData);
   const resetForm = () => {
@@ -129,29 +177,37 @@ function Users() {
     setGender("");
     setState("");
     setCity("");
-    setReset(true);
+
+    setError({});
+    setIsEdit(false);
+    setIdToEdit(null);
+    // setReset(true);
   };
 
-  const stateOptions = [
-    { id: 1, name: "maharashtra", label: "Maharashtra" },
-    { id: 2, name: "gujarat", label: "Gujarat" },
-  ];
-  const stateWiseCity = {
-    maharashtra: [
-      { id: 1, name: "mumbai", Label: "Mumbai" },
-      { id: 2, name: "pune", Label: "Pune" },
-      { id: 3, name: "thane", Label: "Thane" },
-      { id: 4, name: "nashik", Label: "Nashik" },
-    ],
-    gujarat: [
-      { id: 1, name: "ahmedabad", Label: "Ahmedabad" },
-      { id: 2, name: "surat", Label: "Surat" },
-      { id: 3, name: "vadodara", Label: "Vadodara" },
-    ],
-  };
   // const notFutureDateSelect = new Date().toISOString().split("T")[0];
 
   // edit function
+  const editHandler = (id) => {
+    //console.log(id);
+    setIsEdit(true);
+    setIdToEdit(id);
+
+    const [selectedUser] = userData.filter((e) => e.Id === id);
+    setShowForm(true);
+    // console.log("hii", selectedUser);
+    setFirstName(selectedUser.FirstName);
+    setLastName(selectedUser.LastName);
+    setDob(selectedUser.DOB);
+    setGender(selectedUser.Gender);
+    setAge(selectedUser.Age);
+    setState(selectedUser.State);
+    setCity(selectedUser.City);
+  };
+  // const deleteHandler = (id) => {
+  //   console.log(id);
+  //   const deleteVal = userData.filter((deltedUsser) => deltedUsser.Id !== id);
+  //   setUserData(deleteVal);
+  // };
 
   return (
     <>
@@ -344,56 +400,6 @@ function Users() {
           </form>
         </div>
       )}
-      // show user data in table here
-      <h1 className="text-2xl font-bold mb-4">Users Table</h1>
-      <table className="table-auto w-full border border-gray-300">
-        <thead>
-          <tr className="bg-gray-100">
-            <th className="border p-2">Sr No.</th>
-            <th className="border p-2">First Name</th>
-            <th className="border p-2">Last Name</th>
-            <th className="border p-2">Date of Birth</th>
-            <th className="border p-2">Age</th>
-            <th className="border p-2">Gender</th>
-            <th className="border p-2">State</th>
-            <th className="border p-2">City</th>
-            <th className="border p-2">Action</th>
-          </tr>
-        </thead>
-
-        {userData.map((user) => {
-          return (
-            <tbody>
-              <tr key={user.Id}>
-                <td className="border p-2">{user.Id}</td>
-                <td className="border p-2">{user.FirstName}</td>
-                <td className="border p-2">{user.LastName}</td>
-                <td className="border p-2">{user.DOB}</td>
-                <td className="border p-2">{user.Age}</td>
-                <td className="border p-2">{user.Gender}</td>
-                <td className="border p-2">{user.State}</td>
-                <td className="border p-2">{user.City}</td>
-
-                <td className="border p-2">
-                  <button
-                    className="bg-yellow-500 text-white px-3 py-1 rounded mr-2 "
-                    onClick={editHandler}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="bg-red-500 text-white px-3 py-1 rounded"
-                    onClick={deleteHandler}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-              ;
-            </tbody>
-          );
-        })}
-      </table>
     </>
   );
 }
